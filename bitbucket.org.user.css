@@ -1,0 +1,19 @@
+@-moz-document domain("bitbucket.org") {
+
+.bitkit-diff-wrapper-diff .code-component {
+  font-family: 'Fira code', monospace !important;
+}
+
+[data-testid="issues-transition-dropdown--content"] {
+  width:150px;
+}
+
+[data-testid="issues-transition-dropdown--content"] [role="menuitem"] span span span span {
+  max-width:100% !important;
+}
+
+[data-testid="issues-transition-dropdown--trigger"] span span span {
+  max-width: 100px !important;
+}
+
+}
