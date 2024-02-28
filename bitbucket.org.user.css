@@ -1,3 +1,11 @@
+/* ==UserStyle==
+@name           bitbucket.org - Feb 2024
+@namespace      github.com/openstyles/stylus
+@version        1.0.0
+@description    Styles for Bitbucket Cloud
+@author         John van der Loo <john.vanderloo@pathzero.com>
+==/UserStyle== */
+
 @-moz-document domain("bitbucket.org") {
 
 .bitkit-diff-wrapper-diff .code-component {

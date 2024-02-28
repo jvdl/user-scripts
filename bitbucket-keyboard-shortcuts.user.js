@@ -13,9 +13,9 @@
   function activateFilesTab() {
     /** @type HTMLElement */
     const filesTab = document.querySelector('#bb-sidebar [data-testid="sidebar-tab-files"]');
-  	if (filesTab.matches('[aria-selected="false"]')) {
+    if (filesTab.matches('[aria-selected="false"]')) {
       filesTab.click();
-		}
+    }
   }
 
   /**
@@ -38,13 +38,13 @@
 
     if (!getCurrentFileUrl()) {
       fileList[0].click();
-    	window.location.hash = fileList[0].getAttribute('href');
+      window.location.hash = fileList[0].getAttribute('href');
       return;
     }
     /** @type HTMLElement */
     let nextFile;
 
-		fileList.find((a, index) => {
+    fileList.find((a, index) => {
 
       const matches = a.getAttribute('href') === getCurrentFileUrl();
       if (matches) {
@@ -65,13 +65,13 @@
 
     if (!getCurrentFileUrl()) {
       fileList[0].click()
-    	window.location.hash = fileList[0].getAttribute('href');
+      window.location.hash = fileList[0].getAttribute('href');
       return;
     }
     /** @type HTMLElement */
     let prevFile;
 
-		fileList.find((a, index) => {
+    fileList.find((a, index) => {
 
       const matches = a.getAttribute('href') === getCurrentFileUrl();
       if (matches) {
@@ -90,9 +90,9 @@
     .comments-toggled-hidden .bitkit-diff-inline-content-container .ak-renderer-document {
       display: none;
     }`,
-		`.comments-toggled-hidden .bitkit-diff-inline-content-container div[id^="comment-"] {
-			opacity: 0.5;
-		}`,
+    `.comments-toggled-hidden .bitkit-diff-inline-content-container div[id^="comment-"] {
+      opacity: 0.5;
+    }`,
 
   ];
 
@@ -115,7 +115,7 @@
     if (e.key === 'j') {
       console.debug('Going to next file');
       e.preventDefault();
-			gotoNextFile();
+      gotoNextFile();
       return;
     }
     if (e.key === 'k') {
