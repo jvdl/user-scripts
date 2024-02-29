@@ -3,7 +3,7 @@
 // @version  1
 // @grant    none
 // @match  https://bitbucket.org/*
-// @author   John van der Loo <john.vanderloo@pathzero.com>
+// @author   John van der Loo <john@jvdl.dev>
 // ==/UserScript==
 ;(function() {
 
