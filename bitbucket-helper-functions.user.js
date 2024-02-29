@@ -1,9 +1,10 @@
 // ==UserScript==
-// @name     Bitbucket Cloud Helper Functions
-// @version  1
-// @grant    none
-// @match  	 https://bitbucket.org/*/*
-// @author   John van der Loo <john@jvdl.dev>
+// @name      Bitbucket Cloud Helper Functions
+// @namespace http://jvdl.dev/
+// @version   1
+// @grant     none
+// @match  	  https://bitbucket.org/*/*
+// @author    John van der Loo <john@jvdl.dev>
 // ==/UserScript==
 
 (function() {

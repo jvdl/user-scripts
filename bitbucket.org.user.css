@@ -1,9 +1,9 @@
 /* ==UserStyle==
-@name           bitbucket.org - Feb 2024
-@namespace      github.com/openstyles/stylus
-@version        1.0.0
-@description    Styles for Bitbucket Cloud
-@author   John van der Loo <john@jvdl.dev>
+@name         bitbucket.org - Feb 2024
+@namespace    http://jvdl.dev
+@version      1.0.0
+@description  Styles for Bitbucket Cloud
+@author       John van der Loo <john@jvdl.dev>
 ==/UserStyle== */
 
 @-moz-document domain("bitbucket.org") {
