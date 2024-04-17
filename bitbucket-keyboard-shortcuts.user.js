@@ -1,10 +1,12 @@
 // ==UserScript==
-// @name      Bitbucket Cloud Keyboard Shortcuts
-// @namespace http://jvdl.dev/
-// @version   1
-// @grant     none
-// @match     https://bitbucket.org/*
-// @author    John van der Loo <john@jvdl.dev>
+// @name        Bitbucket Cloud Keyboard Shortcuts
+// @description Adds some keyboard shortcuts to Bitbucket Cloud to make using pull requests a little nicer
+// @namespace   http://jvdl.dev/
+// @version     1
+// @grant       none
+// @match       https://bitbucket.org/*/*
+// @author      John van der Loo <john@jvdl.dev>
+// @license     MIT
 // ==/UserScript==
 ;(function() {
 
