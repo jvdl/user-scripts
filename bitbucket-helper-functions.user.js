@@ -2,7 +2,7 @@
 // @name        Bitbucket Cloud Helper Functions
 // @description Sets file hashes in the URL when they are clicked. Automatically checks the "Delete source branch" checkbox on the create PR page.
 // @namespace   http://jvdl.dev/
-// @version     1
+// @version     1.0.1
 // @grant       none
 // @match  	    https://bitbucket.org/*/*
 // @author      John van der Loo <john@jvdl.dev>
@@ -39,23 +39,6 @@
   }
   document.addEventListener('click', handleFileClicks);
 
-  async function waitFor(selector, timeout = 5000) {
-    return new Promise((resolve, reject) => {
-      const timeoutTimer = setTimeout(() => {
-        clearInterval(intervalTimer);
-        reject(`'${el}' was not found in ${timeout}ms`)
-      }, timeout);
-      const intervalTimer = setInterval(() => {
-        const el = document.querySelector(selector)
-        if (el) {
-          clearInterval(intervalTimer);
-          clearTimeout(timeoutTimer);
-          resolve(el);
-        }
-      })
-    })
-  }
-
   function setCheckedByLabel(label) {
     if (!label) {
       return;
@@ -67,10 +50,6 @@
   }
 
   async function setupCreatePrHelper(e) {
-    const el = await waitFor("section > form");
-    if (!el) {
-      console.log('[Bitbucket PR helper] Could not find the create pull request form')
-    }
     let currentLabelId = "";
     let currentTargetBranch = ""
     const observer = new MutationObserver(() => {
@@ -79,10 +58,10 @@
         return;
       }
       const label = document.querySelector('[data-testid="delete-branch--checkbox-label"]')
-      if (currentLabelId === label?.id) {
+      if (label && currentLabelId === label?.id) {
         // we've observed this label already but let's check if the target branch is the same
-        const targetBranch = document.querySelector('[data-testid="create-pull-request-destination-branch-selector"] div[data-value]').textContent
-        if (currentTargetBranch !== targetBranch) {
+        const targetBranch = document.querySelector('[data-testid="create-pull-request-destination-branch-selector"] div[data-value]')?.textContent
+        if (targetBranch && currentTargetBranch !== targetBranch) {
           // Ok we need to update the label's checked state
           setCheckedByLabel(label);
           currentTargetBranch = targetBranch;
@@ -102,11 +81,6 @@
     });
   }
 
-  window.addEventListener('popstate', (e) => {
-    console.log(e.state);
-  });
-
   setupCreatePrHelper();
-
 
 }());
