@@ -1,8 +1,9 @@
 // ==UserScript==
 // @name        Bitbucket Cloud Helper Functions
-// @description Sets file hashes in the URL when they are clicked. Automatically checks the "Delete source branch" checkbox on the create PR page.
+// @description Automatically checks the "Delete source branch" checkbox on the create PR page.
+//              Updated for new PR experience 2024.
 // @namespace   http://jvdl.dev/
-// @version     1.0.1
+// @version     2.0
 // @grant       none
 // @match  	    https://bitbucket.org/*/*
 // @author      John van der Loo <john@jvdl.dev>
@@ -10,34 +11,9 @@
 // ==/UserScript==
 ;(function() {
 
-  function isPullRequestPage() {
-    return window.location.pathname.match(/.*\/pull-requests/);
-  }
-
-  function isFilesTabActive() {
-    const filesTab = document.querySelector('#bb-sidebar [data-testid="sidebar-tab-files"]');
-    return filesTab?.matches('[aria-selected="true"]');
-  }
-
   function isCreatePullRequestPage() {
     return window.location.pathname.match(/.*\/pull-requests\/new/)
   }
-
-  /**
-   * When a file is clicked on the PR page, update the window hash to point to that file.
-   */
-  function handleFileClicks(e) {
-    if (!isPullRequestPage() || !isFilesTabActive()) {
-      return;
-    }
-
-    if (e.target.matches('#bb-sidebar a[href], #bb-sidebar a[href] span')) {
-      const el = e.target.closest('a');
-
-      window.location.hash = el.getAttribute('href');
-    }
-  }
-  document.addEventListener('click', handleFileClicks);
 
   function setCheckedByLabel(label) {
     if (!label) {

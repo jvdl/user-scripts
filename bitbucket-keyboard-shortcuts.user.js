@@ -1,8 +1,9 @@
 // ==UserScript==
 // @name        Bitbucket Cloud Keyboard Shortcuts
-// @description Adds some keyboard shortcuts to Bitbucket Cloud to make using pull requests a little nicer
+// @description Adds keyboard shortcuts to navigate the file tree, collapse comments, and show/hide comments.
+//              Updated for new PR experience 2024.
 // @namespace   http://jvdl.dev/
-// @version     1
+// @version     2.0
 // @grant       none
 // @match       https://bitbucket.org/*/*
 // @author      John van der Loo <john@jvdl.dev>
@@ -13,21 +14,26 @@
   /** @type Array<HTMLElement> */
   let fileList = [];
 
-  function activateFilesTab() {
-    /** @type HTMLElement */
-    const filesTab = document.querySelector('#bb-sidebar [data-testid="sidebar-tab-files"]');
-  	if (filesTab.matches('[aria-selected="false"]')) {
-      filesTab.click();
-		}
+  function updateHash(value) {
+    if (!value) {
+      return;
+    }
+    // Previous version of the file tree did not update the URL hash but
+    // it seems to be doing that now.
+    // If I update the hash manually it makes the experience a little more janky.
+    // Leaving this commented out for now until the new PR view stabilises a bit.
+    //
+    // window.location.hash = value;
   }
 
   /**
+   * Get the list of files in the file tree for a pull request
    * @returns Array<HTMLElement>
    */
   function getFileList() {
 
     /** @type NodeListOf<HTMLElement> */
-    const files = document.querySelectorAll('#bb-sidebar ul a[href^="#chg"]')
+    const files = document.querySelectorAll('#file-tree ul a[href^="#chg"]')
     return Array.from(files);
   }
 
@@ -36,18 +42,21 @@
   }
 
   function gotoNextFile() {
-    activateFilesTab();
     fileList = getFileList();
+
+    if (!fileList || !fileList.length) {
+      return;
+    }
 
     if (!getCurrentFileUrl()) {
       fileList[0].click();
-    	window.location.hash = fileList[0].getAttribute('href');
+      updateHash(fileList[0].getAttribute('href'));
       return;
     }
     /** @type HTMLElement */
     let nextFile;
 
-		fileList.find((a, index) => {
+    fileList.find((a, index) => {
 
       const matches = a.getAttribute('href') === getCurrentFileUrl();
       if (matches) {
@@ -58,23 +67,26 @@
 
     if (nextFile) {
       nextFile.click();
-      window.location.hash = nextFile.getAttribute('href');
+      updateHash(nextFile.getAttribute('href'));
     }
   }
 
   function gotoPreviousFile() {
-    activateFilesTab();
     fileList = getFileList();
+
+    if (!fileList || !fileList.length) {
+      return;
+    }
 
     if (!getCurrentFileUrl()) {
       fileList[0].click()
-    	window.location.hash = fileList[0].getAttribute('href');
+      updateHash(fileList[0].getAttribute('href'));
       return;
     }
     /** @type HTMLElement */
     let prevFile;
 
-		fileList.find((a, index) => {
+    fileList.find((a, index) => {
 
       const matches = a.getAttribute('href') === getCurrentFileUrl();
       if (matches) {
@@ -85,7 +97,7 @@
 
     if (prevFile) {
       prevFile.click();
-      window.location.hash = prevFile.getAttribute('href');
+      updateHash(prevFile.getAttribute('href'));
     }
   }
 
@@ -99,22 +111,22 @@
       display: none;
     }`,
     // fade out the main comment
-		`.comments-toggled-collapsed .bitkit-diff-inline-content-container div[id^="comment-"] {
-			opacity: 0.5;
+    `.comments-toggled-collapsed .bitkit-diff-inline-content-container div[id^="comment-"] {
+      opacity: 0.5;
       row-gap: 0;
-		}`,
+    }`,
     // a little heavy-handed, but hides the BB provided collapse button
-		`.comments-toggled-collapsed .bitkit-diff-inline-content-container button {
+    `.comments-toggled-collapsed .bitkit-diff-inline-content-container button {
       display: none;
-		}`,
+    }`,
     // vertically center the name
-		`.comments-toggled-collapsed .bitkit-diff-inline-content-container div[id^="comment-"] > div:nth-child(2) {
-			padding-top: 6px;
-		}`,
+    `.comments-toggled-collapsed .bitkit-diff-inline-content-container div[id^="comment-"] > div:nth-child(2) {
+      padding-top: 6px;
+    }`,
     // hide the actions row at the bottom of the comment
-		`.comments-toggled-collapsed .bitkit-diff-inline-content-container div[id^="comment-"] > div:nth-child(2) > div > div:nth-child(3) {
-			display: none;
-		}`,
+    `.comments-toggled-collapsed .bitkit-diff-inline-content-container div[id^="comment-"] > div:nth-child(2) > div > div:nth-child(3) {
+      display: none;
+    }`,
     // notification styles for the hidden comments
     `.comments-hidden-notification {
       position: fixed;
@@ -158,6 +170,11 @@
   }
   addStylesheetRules(rules);
 
+  /**
+   *
+   * @param {KeyboardEvent} e
+   * @returns
+   */
   function keydownHandler(e) {
     // don't execute the handler if the target is in a place where normal keyboard input is required
     if (e.target.matches('input, textarea, button, [contenteditable="true"]')) {
@@ -168,10 +185,11 @@
     if (e.metaKey) {
       return
     }
+
     if (e.key === 'j') {
       console.debug('Going to next file');
       e.preventDefault();
-			gotoNextFile();
+      gotoNextFile();
       return;
     }
     if (e.key === 'k') {
