@@ -1,105 +1,15 @@
 // ==UserScript==
 // @name        Bitbucket Cloud Keyboard Shortcuts
-// @description Adds keyboard shortcuts to navigate the file tree, collapse comments, and show/hide comments.
+// @description Adds keyboard shortcuts to collapse comments, and show/hide comments.
 //              Updated for new PR experience 2024.
 // @namespace   http://jvdl.dev/
-// @version     2.0
+// @version     2.1
 // @grant       none
 // @match       https://bitbucket.org/*/*
 // @author      John van der Loo <john@jvdl.dev>
 // @license     MIT
 // ==/UserScript==
 ;(function() {
-
-  /** @type Array<HTMLElement> */
-  let fileList = [];
-
-  function updateHash(value) {
-    if (!value) {
-      return;
-    }
-    // Previous version of the file tree did not update the URL hash but
-    // it seems to be doing that now.
-    // If I update the hash manually it makes the experience a little more janky.
-    // Leaving this commented out for now until the new PR view stabilises a bit.
-    //
-    // window.location.hash = value;
-  }
-
-  /**
-   * Get the list of files in the file tree for a pull request
-   * @returns Array<HTMLElement>
-   */
-  function getFileList() {
-
-    /** @type NodeListOf<HTMLElement> */
-    const files = document.querySelectorAll('#file-tree ul a[href^="#chg"]')
-    return Array.from(files);
-  }
-
-  function getCurrentFileUrl() {
-    return window.location.hash;
-  }
-
-  function gotoNextFile() {
-    fileList = getFileList();
-
-    if (!fileList || !fileList.length) {
-      return;
-    }
-
-    if (!getCurrentFileUrl()) {
-      fileList[0].click();
-      updateHash(fileList[0].getAttribute('href'));
-      return;
-    }
-    /** @type HTMLElement */
-    let nextFile;
-
-    fileList.find((a, index) => {
-
-      const matches = a.getAttribute('href') === getCurrentFileUrl();
-      if (matches) {
-          nextFile = fileList[index >= fileList.length - 1 ? 0 : index + 1]
-      }
-      return matches;
-    });
-
-    if (nextFile) {
-      nextFile.click();
-      updateHash(nextFile.getAttribute('href'));
-    }
-  }
-
-  function gotoPreviousFile() {
-    fileList = getFileList();
-
-    if (!fileList || !fileList.length) {
-      return;
-    }
-
-    if (!getCurrentFileUrl()) {
-      fileList[0].click()
-      updateHash(fileList[0].getAttribute('href'));
-      return;
-    }
-    /** @type HTMLElement */
-    let prevFile;
-
-    fileList.find((a, index) => {
-
-      const matches = a.getAttribute('href') === getCurrentFileUrl();
-      if (matches) {
-        prevFile = fileList[index <= 0 ? fileList.length - 1 : index - 1]
-      }
-      return matches;
-    });
-
-    if (prevFile) {
-      prevFile.click();
-      updateHash(prevFile.getAttribute('href'));
-    }
-  }
 
   const rules = [
     // hide the whole comment
@@ -186,17 +96,6 @@
       return
     }
 
-    if (e.key === 'j') {
-      console.debug('Going to next file');
-      e.preventDefault();
-      gotoNextFile();
-      return;
-    }
-    if (e.key === 'k') {
-      console.debug('Going to previous file');
-      e.preventDefault();
-      return gotoPreviousFile();
-    }
     if (e.key === 'c') {
       console.debug('Toggling comment collapsing');
       e.preventDefault();
